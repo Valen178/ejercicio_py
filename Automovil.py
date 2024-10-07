@@ -16,6 +16,10 @@ class Automovil(ABC):
         self.velocidad = self.velocidad - self.aceleracion
         return self.velocidad
 
-    @abstractmethod
-    def conducir(self):
-        pass
+    # @abstractmethod
+    # def conducir(self):
+    #     pass
+
+    def datos(automovil):
+        print(f"Marca: {automovil.marca} y tiene {automovil.ruedas} ruedas" )
+        
