@@ -1,52 +1,44 @@
-import json
-import os
 import sqlite3
 
-DATA_FILE = 'users.json'
+class Database:
+    def __init__(self, db_name):
+        self.connection = sqlite3.connect(db_name)
+        self.cursor = self.connection.cursor()
+        self.create_table()
 
+    def create_table(self):
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS usuarios (
+                dni TEXT PRIMARY KEY,
+                nombre TEXT NOT NULL,
+                apellido TEXT NOT NULL,
+                estado TEXT NOT NULL
+            )
+        ''')
+        self.connection.commit()
 
-def load_users():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, 'r') as file:
-            return json.load(file)
-    return []
+    def create_user(self, dni, nombre, apellido, estado):
+        self.cursor.execute('''
+            INSERT INTO usuarios (dni, nombre, apellido, estado)
+            VALUES (?, ?, ?, ?)
+        ''', (dni, nombre, apellido, estado))
+        self.connection.commit()
 
-def save_users(users):
-    with open(DATA_FILE, 'w') as file:
-        json.dump(users, file)
+    def read_user(self, dni):
+        self.cursor.execute('SELECT * FROM usuarios WHERE dni = ?', (dni,))
+        return self.cursor.fetchone()
 
-def create_user(username, email):
-    users = load_users()
-    user_id = len(users) + 1
-    new_user = {'id': user_id, 'username': username, 'email': email}
-    users.append(new_user)
-    save_users(users)
-    return new_user
+    def update_user(self, dni, nombre, apellido, estado):
+        self.cursor.execute('''
+            UPDATE usuarios
+            SET nombre = ?, apellido = ?, estado = ?
+            WHERE dni = ?
+        ''', (nombre, apellido, estado, dni))
+        self.connection.commit()
 
-def read_users():
-    return load_users()
+    def delete_user(self, dni):
+        self.cursor.execute('DELETE FROM usuarios WHERE dni = ?', (dni,))
+        self.connection.commit()
 
-def update_user(user_id, username=None, email=None):
-    users = load_users()
-    for user in users:
-        if user['id'] == user_id:
-            if username:
-                user['username'] = username
-            if email:
-                user['email'] = email
-            save_users(users)
-            return user
-    return None
-
-def delete_user(user_id):
-    users = load_users()
-    users = [user for user in users if user['id'] != user_id]
-    save_users(users)
-
-
-class Conexion:
-    def __init__(self, nombre_bd):
-        self.nombre_bd=nombre_bd
-        self.conexion=sqlite3.conexion(nombre_bd)
-        self.cursor=self.conexion.cursor()
-        
+    def close(self):
+        self.connection.close()

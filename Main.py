@@ -1,6 +1,7 @@
 import sqlite3
 from AutomovilVolador import AutomovilVolador
 from clase8.Vehiculo import Vehiculo
+from ejercicio_py.Conexion import Database
 
 
 class Main:
@@ -89,17 +90,33 @@ class Main:
     # cursor.close()
     # conexion.close()
 
-    conexion = sqlite3.connect("base_datos/mi_bd.db")
-    cursor = conexion.cursor()
+    # conexion = sqlite3.connect("base_datos/mi_bd.db")
+    # cursor = conexion.cursor()
 
-    select_query = "SELECT * FROM vehiculo;"
+    # select_query = "SELECT * FROM vehiculo;"
 
-    cursor.execute(select_query)
+    # cursor.execute(select_query)
 
-    rows = cursor.fetchall()
+    # rows = cursor.fetchall()
 
-    for row in rows:
-        print(row)
+    # for row in rows:
+    #     print(row)
 
-    cursor.close()
-    conexion.close()
+    # cursor.close()
+    # conexion.close()
+
+    db = Database('usuarios.db')
+
+    db.create_user('12345678', 'Juan', 'Pérez', 'Activo')
+
+    user = db.read_user('12345678')
+    print(user)
+
+    db.update_user('12345678', 'Juan', 'Pérez', 'Inactivo')
+
+    user = db.read_user('12345678')
+    print(user)
+
+    db.delete_user('12345678')
+
+    db.close()
