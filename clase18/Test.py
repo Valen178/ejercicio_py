@@ -19,6 +19,12 @@ class Test(unittest.TestCase):
 
     def test_division(self):
         self.assertEqual(Calculadora.dividir(5, 5), 1)
+    
+    def test_texto_mayuscula(self):
+        self.assertTrue(Calculadora.cadena_texto("HOLA MUNDO"))
+    
+    def test_texto_minuscula(self):
+        self.assertFalse(Calculadora.cadena_texto("hola mundo"))
 
 if __name__ == '__main__':
     unittest.main()
